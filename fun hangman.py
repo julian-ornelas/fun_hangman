@@ -15,7 +15,7 @@ elif difficulty == "hard":
     number = str(random.randint(11, 15))
     word_request = requests.get("https://random-word-api.herokuapp.com/word?length=" + number)
 else:
-    word_request = requests.get("https://random-word-api.herokuapp.com/word?length=")
+    word_request = requests.get("https://random-word-api.herokuapp.com/word")
 
 # Converts json into readable string
 word = json.loads(word_request.text)
@@ -44,24 +44,34 @@ print(play_area)
 # Checks for input letter against the generated word
 # Shows letter in the play area
 # Counts lives accordingly
+guessed_letters = []
 while player_lives != 0:
 
     player_guess = input("Letter: ")
-    if player_guess in word:
-        for letter in re.finditer(player_guess, word):
-            guess_location = letter.start()
-            play_area[guess_location] = player_guess
-        print("Yes")
-        if play_area == decompsed_word:
-            print("You win!")
-            break
+    if len(player_guess) > 1:
+        print("Just one letter")
     else:
-        player_lives -= 1
-        print("No")
+        if player_guess in guessed_letters:
+            print("You used this already")
+            
+        else:
+            if player_guess in word:
+                for letter in re.finditer(player_guess, word):
+                    guess_location = letter.start()
+                    play_area[guess_location] = player_guess
+                print("Yes")
+                if play_area == decompsed_word:
+                    print("You win!")
+                    break
+            else:
+                player_lives -= 1
+                print("No")
+            guessed_letters = guessed_letters + list(player_guess)
 
     print()
     print(f"{player_lives} lives remain")
     print(play_area)
+    print(guessed_letters)
 
 # Prints word at the very end
 print(f"The word was {word}")
