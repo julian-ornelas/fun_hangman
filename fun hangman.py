@@ -1,6 +1,7 @@
 import requests
 import json
 import random
+import re
 
 # API request which turns JSON file into string
 difficulty = input("Difficulty (easy, medium, or hard): ")
@@ -20,15 +21,15 @@ else:
 word = json.loads(word_request.text)
 word = json.dumps(word)
 word = word[2:-2]
-print(word)
-print(number)
+# print(word)
 
 decompsed_word = list(word)
-print(decompsed_word)
+# print(decompsed_word)
 
 # Length
 length = len(word)
 print(f"{length} characters")
+print()
 
 # Prints the spaces for player.
 play_area = ["_"]
@@ -47,8 +48,9 @@ while player_lives != 0:
 
     player_guess = input("Letter: ")
     if player_guess in word:
-        guess_location = word.find(player_guess)
-        play_area[guess_location] = player_guess
+        for letter in re.finditer(player_guess, word):
+            guess_location = letter.start()
+            play_area[guess_location] = player_guess
         print("Yes")
         if play_area == decompsed_word:
             print("You win!")
@@ -57,9 +59,9 @@ while player_lives != 0:
         player_lives -= 1
         print("No")
 
-    
+    print()
     print(f"{player_lives} lives remain")
     print(play_area)
 
-# Prints word at the very end.
-print(f"The word was {word}.")
+# Prints word at the very end
+print(f"The word was {word}")
