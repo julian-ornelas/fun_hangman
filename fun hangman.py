@@ -3,15 +3,15 @@ import json
 import random
 import re
 
-# API request which turns JSON file into string
-difficulty = input("Difficulty (easy, medium, or hard): ")
-if difficulty == "easy":
+# API request
+Length = input("Length (short, medium, or long): ")
+if Length == "short":
     number = str(random.randint(4, 6))
     word_request = requests.get("https://random-word-api.herokuapp.com/word?length=" + number)
-elif difficulty == "medium":
+elif Length == "medium":
     number = str(random.randint(7, 10))
     word_request = requests.get("https://random-word-api.herokuapp.com/word?length=" + number)
-elif difficulty == "hard":
+elif Length == "long":
     number = str(random.randint(11, 15))
     word_request = requests.get("https://random-word-api.herokuapp.com/word?length=" + number)
 else:
@@ -21,19 +21,17 @@ else:
 word = json.loads(word_request.text)
 word = json.dumps(word)
 word = word[2:-2]
-# print(word)
 
 decompsed_word = list(word)
-# print(decompsed_word)
 
-# Length
-length = len(word)
-print(f"{length} characters")
+# word_length
+word_length = len(word)
+print(f"{word_length} characters")
 print()
 
 # Prints the spaces for player.
 play_area = ["_"]
-play_area = play_area * length
+play_area = play_area * word_length
 
 # Starts off the player with 8 lives.
 player_lives = 8
@@ -50,6 +48,8 @@ while player_lives != 0:
     player_guess = input("Letter: ")
     if len(player_guess) > 1:
         print("Just one letter")
+    elif len(player_guess) == 0:
+        print("Type a letter")
     else:
         if player_guess in guessed_letters:
             print("You used this already")
@@ -61,17 +61,22 @@ while player_lives != 0:
                     play_area[guess_location] = player_guess
                 print("Yes")
                 if play_area == decompsed_word:
+                    print()
                     print("You win!")
                     break
             else:
                 player_lives -= 1
                 print("No")
+                if player_lives == 0:
+                    print()
+                    print("You lost")
+                    break
             guessed_letters = guessed_letters + list(player_guess)
 
     print()
     print(f"{player_lives} lives remain")
     print(play_area)
-    print(guessed_letters)
+    print(f"Guessed letters: {guessed_letters}")
 
 # Prints word at the very end
 print(f"The word was {word}")
