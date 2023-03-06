@@ -4,24 +4,27 @@ import random
 import re
 
 # API request
-Length = input("Length (short, medium, or long): ")
-if Length == "short":
-    number = str(random.randint(4, 6))
-    word_request = requests.get("https://random-word-api.herokuapp.com/word?length=" + number)
-elif Length == "medium":
-    number = str(random.randint(7, 10))
-    word_request = requests.get("https://random-word-api.herokuapp.com/word?length=" + number)
-elif Length == "long":
-    number = str(random.randint(11, 15))
-    word_request = requests.get("https://random-word-api.herokuapp.com/word?length=" + number)
-else:
-    word_request = requests.get("https://random-word-api.herokuapp.com/word")
+def get_word(length):
+    
+    if length == "short":
+        number = str(random.randint(4, 6))
+        word_request = requests.get("https://random-word-api.herokuapp.com/word?length=" + number)
+    elif length == "medium":
+        number = str(random.randint(7, 10))
+        word_request = requests.get("https://random-word-api.herokuapp.com/word?length=" + number)
+    elif length == "long":
+        number = str(random.randint(11, 15))
+        word_request = requests.get("https://random-word-api.herokuapp.com/word?length=" + number)
+    else:
+        word_request = requests.get("https://random-word-api.herokuapp.com/word")
 
-# Converts json into readable string
-word = json.loads(word_request.text)
-word = json.dumps(word)
-word = word[2:-2]
+    # Converts json into readable string
+    word = json.loads(word_request.text)
+    word = json.dumps(word)
+    word = word[2:-2]
 
+
+word = get_word(length = input("Length (short, medium, or long): "))
 decompsed_word = list(word)
 
 # word_length
